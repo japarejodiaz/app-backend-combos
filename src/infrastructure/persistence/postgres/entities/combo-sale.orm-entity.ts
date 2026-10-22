@@ -2,6 +2,8 @@ import {
     Column,
     Entity,
     PrimaryColumn,
+    CreateDateColumn,
+    UpdateDateColumn,
 } from 'typeorm';
 
 @Entity('combo_sales')
@@ -12,16 +14,17 @@ export class ComboSaleOrmEntity {
 
     @Column({
         type: 'uuid',
+        name: 'combo_id',
     })
     comboId: string;
 
     @Column({
-        type: 'integer',
+        name: 'total_units',
     })
     totalUnits: number;
 
     @Column({
-        type: 'integer',
+        name: 'delivered_units',
         default: 0,
     })
     deliveredUnits: number;
@@ -30,4 +33,14 @@ export class ComboSaleOrmEntity {
         length: 20,
     })
     status: string;
+
+    @CreateDateColumn({
+        name: 'created_at',
+    })
+    createdAt: Date;
+
+    @UpdateDateColumn({
+        name: 'updated_at',
+    })
+    updatedAt: Date;
 }
