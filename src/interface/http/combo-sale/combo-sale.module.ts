@@ -11,6 +11,7 @@ import { ComboSaleOrmEntity } from '../../../infrastructure/persistence/postgres
 import { ComboSaleRepository } from '../../../domain/combo-sale/repositories/combo-sale.repository';
 
 import { PostgresComboSaleRepository } from '../../../infrastructure/persistence/postgres/repositories/combo-sale.postgres.repository';
+import { GetComboSaleByIdUseCase }    from '../../../application/combos-sale/use-cases/get-combo-sale-by-id.use-case';
 
 @Module({
     imports: [
@@ -25,6 +26,7 @@ import { PostgresComboSaleRepository } from '../../../infrastructure/persistence
 
     providers: [
         CreateComboSaleUseCase,
+        GetComboSaleByIdUseCase,
 
         {
             provide: ComboSaleRepository,
