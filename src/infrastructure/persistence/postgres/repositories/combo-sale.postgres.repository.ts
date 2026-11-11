@@ -12,52 +12,97 @@ import { ComboSaleOrmEntity } from '../entities/combo-sale.orm-entity';
 
 @Injectable()
 export class PostgresComboSaleRepository
-    implements ComboSaleRepository
-{
-    constructor(
-        @InjectRepository(
-            ComboSaleOrmEntity,
-        )
-        private readonly repository: Repository<ComboSaleOrmEntity>,
-    ) {}
+  implements ComboSaleRepository {
+  constructor(
+    @InjectRepository(
+      ComboSaleOrmEntity,
+    )
+    private readonly repository: Repository<ComboSaleOrmEntity>,
+  ) {
+  }
 
-    async create(
-        sale: ComboSale,
-    ): Promise<ComboSale> {
+  async create(
+    sale: ComboSale,
+  ): Promise<ComboSale> {
 
-        const entity =
-            this.repository.create({
-                id: sale.id,
-                comboId: sale.comboId,
-                totalUnits: sale.totalUnits,
-                deliveredUnits: sale.deliveredUnits,
-                status: sale.status,
-            });
+    const entity =
+      this.repository.create({
+        id: sale.id,
+        companyId: sale.companyId,
+        comboId: sale.comboId,
+        totalUnits: sale.totalUnits,
+        deliveredUnits: sale.deliveredUnits,
+        status: sale.status,
+      });
 
-        await this.repository.save(entity);
+    await this.repository.save(entity);
 
-        return sale;
+    return sale;
+  }
+
+  async findById(
+    id: string,
+  ): Promise<ComboSale | null> {
+
+    const entity =
+      await this.repository.findOne({
+        where: { id },
+      });
+
+    if (!entity) {
+      return null;
     }
 
-    async findById(
-        id: string,
-    ): Promise<ComboSale | null> {
+    return new ComboSale(
+      entity.id,
+      entity.companyId,
+      entity.comboId,
+      entity.totalUnits,
+      entity.deliveredUnits,
+      entity.status as any,
+    );
+  }
 
-        const entity =
-            await this.repository.findOne({
-                where: { id },
-            });
+  async update(
+    sale: ComboSale,
+  ): Promise<ComboSale> {
 
-        if (!entity) {
-            return null;
-        }
+    await this.repository.update(
+      sale.id,
+      {
+        deliveredUnits: sale.deliveredUnits,
+        status: sale.status,
+      },
+    );
 
-        return new ComboSale(
-            entity.id,
-            entity.comboId,
-            entity.totalUnits,
-            entity.deliveredUnits,
-            entity.status as any,
-        );
+    return sale;
+  }
+
+  async findByCompanyAndId(
+    companyId: string,
+    id: string,
+  ): Promise<ComboSale | null> {
+
+    const entity =
+      await this.repository.findOne({
+        where: {
+          id,
+          companyId,
+        },
+      });
+
+    if (!entity) {
+      return null;
     }
+
+    return new ComboSale(
+      entity.id,
+      entity.companyId,
+      entity.comboId,
+      entity.totalUnits,
+      entity.deliveredUnits,
+      entity.status as any,
+    );
+
+  }
 }

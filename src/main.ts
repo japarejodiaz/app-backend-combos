@@ -77,6 +77,14 @@ async function bootstrap() {
         `🌍 ENV        : ${configService.get('app.env')}`,
     );
 
+    logger.log(
+      `🔐 JWT Secret : ${configService.get('auth.jwtSecret')}`,
+    );
+
+    logger.log(
+      `⏱ JWT Expire : ${configService.get('auth.jwtExpiresIn')}`,
+    );
+
     logger.log('=================================');
 }
 

@@ -6,6 +6,9 @@ import {
 
 export class CreateComboSaleDto {
 
+   /* @IsUUID()
+    companyId: string;*/
+
     @IsUUID()
     comboId: string;
 

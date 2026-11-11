@@ -10,4 +10,13 @@ export abstract class ComboSaleRepository {
         id: string,
     ): Promise<ComboSale | null>;
 
+    abstract update(
+      comboSale: ComboSale,
+    ): Promise<ComboSale>;
+
+    abstract findByCompanyAndId(
+      companyId: string,
+      id: string,
+    ): Promise<ComboSale | null>;
+
 }

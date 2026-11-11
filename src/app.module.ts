@@ -4,9 +4,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { HealthController } from './interface/http/health/health.controller';
 import { HealthModule } from './interface/http/health/health.module';
 import { ComboSaleModule } from './interface/http/combo-sale/combo-sale.module';
+import { AuthModule } from './interface/http/auth/auth.module';
 
 import appConfig from './infrastructure/config/app.config';
 import databaseConfig from './infrastructure/config/database.config';
+import authConfig from './infrastructure/config/auth.config';
 import { envValidationSchema } from './infrastructure/config/env.validation';
 import { typeOrmAsyncConfig } from './infrastructure/database/typeorm.config';
 
@@ -18,7 +20,7 @@ import { typeOrmAsyncConfig } from './infrastructure/database/typeorm.config';
         `.env.${process.env.NODE_ENV || 'develop'}`
       ],
       validationSchema: envValidationSchema,
-      load: [appConfig, databaseConfig],
+      load: [appConfig, databaseConfig, authConfig],
     }),
 
     TypeOrmModule.forRootAsync(
@@ -27,6 +29,7 @@ import { typeOrmAsyncConfig } from './infrastructure/database/typeorm.config';
 
     HealthModule,
     ComboSaleModule,
+    AuthModule,
   ],
   controllers: [HealthController],
 })

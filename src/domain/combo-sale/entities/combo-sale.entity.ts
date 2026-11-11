@@ -4,6 +4,7 @@ export class ComboSale {
 
     constructor(
         public readonly id: string,
+        public readonly companyId: string,
         public readonly comboId: string,
 
         public totalUnits: number,

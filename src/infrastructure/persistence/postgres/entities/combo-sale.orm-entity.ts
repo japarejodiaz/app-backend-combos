@@ -43,4 +43,10 @@ export class ComboSaleOrmEntity {
         name: 'updated_at',
     })
     updatedAt: Date;
+
+    @Column({
+        name: 'company_id',
+        type: 'uuid',
+    })
+    companyId: string;
 }

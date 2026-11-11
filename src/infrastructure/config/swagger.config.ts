@@ -6,5 +6,6 @@ export const swaggerConfig = new DocumentBuilder()
         'Sistema de control de combos, ventas, QR y entregas',
     )
     .setVersion('1.0.0')
+    .addBearerAuth()
     .addTag('combo-sales')
     .build();

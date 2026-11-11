@@ -14,10 +14,10 @@ export class GetComboSaleByIdUseCase {
     ComboSaleRepository,
   ) {}
 
-  async execute(id: string) {
+  async execute(companyId: string, id: string) {
 
     const comboSale =
-      await this.repository.findById(id);
+      await this.repository.findByCompanyAndId(companyId, id);
 
     if (!comboSale) {
       throw new NotFoundException(
@@ -27,6 +27,7 @@ export class GetComboSaleByIdUseCase {
 
     return {
       id: comboSale.id,
+      companyId: comboSale.companyId,
       comboId: comboSale.comboId,
       totalUnits: comboSale.totalUnits,
       deliveredUnits: comboSale.deliveredUnits,
