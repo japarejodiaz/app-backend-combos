@@ -39,7 +39,10 @@ import { GenerateQrResponseDto } from '../../../interface/http/combo-sale/dto/ge
 import { UseGuards } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../../infrastructure/security/guards/jwt-auth.guard';
+import { RolesGuard } from '../../../infrastructure/security/guards/roles.guard';
 import { CurrentUser } from '../../../shared/decorators/current-user.decorator';
+import { Roles } from '../../../shared/decorators/roles.decorator';
+import { UserRole } from '../../../domain/user/enums/user-role.enum';
 
 @ApiTags('Combo Sales')
 @Controller('combo-sales')
@@ -91,8 +94,14 @@ export class ComboSaleController {
         type: ErrorResponseDto,
     })
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @ApiBearerAuth()
+
+    @Roles(
+      UserRole.OWNER,
+      UserRole.MANAGER,
+      UserRole.CASHIER,
+    )
 
     create(
       @CurrentUser() user: any,
@@ -142,8 +151,14 @@ export class ComboSaleController {
         type: ErrorResponseDto,
     })
 
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @ApiBearerAuth()
+    @Roles(
+      UserRole.OWNER,
+      UserRole.MANAGER,
+      UserRole.CASHIER,
+      UserRole.WAITER,
+    )
 
     findOne(
       @CurrentUser() user: any,
@@ -162,7 +177,12 @@ export class ComboSaleController {
      */
     @Post(':id/deliver')
     @Version('1')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(
+      UserRole.OWNER,
+      UserRole.MANAGER,
+      UserRole.WAITER,
+    )
     @ApiBearerAuth()
     @ApiOperation({
         summary: 'Entregar unidades de un combo',
@@ -224,7 +244,13 @@ export class ComboSaleController {
 
     @Get(':id/deliveries')
     @Version('1')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(
+      UserRole.OWNER,
+      UserRole.MANAGER,
+      UserRole.CASHIER,
+      UserRole.WAITER,
+    )
     @ApiBearerAuth()
     @ApiOperation({
         summary: 'Consultar historial de entregas',
@@ -279,7 +305,12 @@ export class ComboSaleController {
      */
     @Post(':id/generate-qr')
     @Version('1')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(
+      UserRole.OWNER,
+      UserRole.MANAGER,
+      UserRole.CASHIER,
+    )
     @ApiBearerAuth()
     @ApiOperation({
         summary: 'Generar QR para una venta',
@@ -316,11 +347,13 @@ export class ComboSaleController {
     })
 
     generateQr(
+      @CurrentUser() user: any,
       @Param('id')
       id: string,
     ) {
 
         return this.generateQrUseCase.execute(
+          user.companyId,
           id,
         );
 
@@ -335,7 +368,12 @@ export class ComboSaleController {
 
     @Get(':id/qr')
     @Version('1')
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles(
+      UserRole.OWNER,
+      UserRole.MANAGER,
+      UserRole.CASHIER,
+    )
     @ApiBearerAuth()
 
     @ApiOperation({
@@ -362,6 +400,7 @@ export class ComboSaleController {
     })
 
     async viewQr(
+      @CurrentUser() user: any,
       @Param('id')
       id: string,
 
@@ -369,7 +408,7 @@ export class ComboSaleController {
       res: Response,
     ) {
         const result =
-          await this.generateQrUseCase.execute(id);
+          await this.generateQrUseCase.execute(user.companyId, id);
 
         const base64 =
           result.qr.replace(

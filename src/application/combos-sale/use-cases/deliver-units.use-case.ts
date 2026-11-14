@@ -19,7 +19,7 @@ export class DeliverUnitsUseCase {
   ) {}
 
   async execute(companyId: string, id: string, units: number) {
-    const comboSale = await this.repository.abstfindByCompanyAndId(companyId, id);
+    const comboSale = await this.repository.findByCompanyAndId(companyId, id);
 
     if (!comboSale) {
       throw new NotFoundException('ComboSale not found');

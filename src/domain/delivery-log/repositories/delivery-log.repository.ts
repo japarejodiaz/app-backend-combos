@@ -10,4 +10,9 @@ export abstract class DeliveryLogRepository {
     comboSaleId: string,
   ): Promise<DeliveryLog[]>;
 
+  abstract findByCompanyAndComboSaleId(
+    companyId: string,
+    comboSaleId: string,
+  ): Promise<DeliveryLog[]>;
+
 }

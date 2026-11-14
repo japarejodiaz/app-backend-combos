@@ -21,11 +21,13 @@ export class GenerateQrUseCase {
   ) {}
 
   async execute(
+    companyId: string,
     comboSaleId: string,
   ) {
 
     const comboSale =
-      await this.repository.findById(
+      await this.repository.findByCompanyAndId(
+        companyId,
         comboSaleId,
       );
 

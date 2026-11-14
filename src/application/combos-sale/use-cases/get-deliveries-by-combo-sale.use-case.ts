@@ -35,7 +35,8 @@ export class GetDeliveriesByComboSaleUseCase {
     }
 
     return this.deliveryRepository
-      .findByComboSaleId(
+      .findByCompanyAndComboSaleId(
+        companyId,
         comboSaleId,
       );
   }
