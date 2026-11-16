@@ -14,4 +14,10 @@ export abstract class CompanyRepository {
     code: string,
   ): Promise<Company | null>;
 
+  abstract findAll():
+    Promise<Company[]>;
+
+  abstract update(
+    company: Company,
+  ): Promise<Company>;
 }

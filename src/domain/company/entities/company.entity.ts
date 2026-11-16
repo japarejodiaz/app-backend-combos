@@ -4,7 +4,7 @@ export class Company {
     public readonly id: string,
     public readonly code: string,
     public readonly name: string,
-    public readonly active: boolean,
+    public active: boolean,
   ) {}
 
 }
