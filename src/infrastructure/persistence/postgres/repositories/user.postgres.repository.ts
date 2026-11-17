@@ -10,12 +10,18 @@ import { UserOrmEntity } from '../entities/user.orm-entity';
 
 @Injectable()
 export class PostgresUserRepository
-  implements UserRepository
-{
+  implements UserRepository {
   constructor(
     @InjectRepository(UserOrmEntity)
     private readonly repository: Repository<UserOrmEntity>,
-  ) {}
+  ) {
+  }
+
+  /**
+   * Creates a new user in the repository.
+   * @param user
+   * @returns Promise<User>
+   */
 
   async create(
     user: User,
@@ -36,6 +42,13 @@ export class PostgresUserRepository
     return user;
   }
 
+
+  /**
+   * Finds a user by their ID.
+   * @param id
+   * @returns Promise<User | null>
+   */
+
   async findById(
     id: string,
   ): Promise<User | null> {
@@ -52,6 +65,10 @@ export class PostgresUserRepository
     return this.toDomain(entity);
   }
 
+  /**
+   * Finds a user by their username.
+   * @param username
+   */
   async findByUsername(
     username: string,
   ): Promise<User | null> {
@@ -65,6 +82,11 @@ export class PostgresUserRepository
       ? this.toDomain(entity)
       : null;
   }
+
+  /**
+   * Finds a user by their email address.
+   * @param email
+   */
 
   async findByEmail(
     email: string,
@@ -80,6 +102,12 @@ export class PostgresUserRepository
       : null;
   }
 
+  /**
+   * Converts a UserOrmEntity to a User domain entity.
+   * @param entity
+   * @private
+   */
+
   private toDomain(
     entity: UserOrmEntity,
   ): User {
@@ -93,6 +121,82 @@ export class PostgresUserRepository
       entity.role as any,
       entity.active,
     );
+
+  }
+
+  /**
+   * Finds all users in the repository.
+   * @returns Promise<User[]>
+   */
+
+  async findAll():
+    Promise<User[]> {
+
+    const entities =
+      await this.repository.find({
+        order: {
+          username: 'ASC',
+        },
+      });
+
+    return entities.map(
+      entity => this.toDomain(
+        entity,
+      ),
+    );
+  }
+
+  /**
+   * Finds all users by their company ID.
+   * @param companyId
+   */
+
+  async findByCompanyId(
+    companyId: string,
+  ): Promise<User[]> {
+
+    const entities =
+      await this.repository.find({
+
+        where: {
+          companyId,
+        },
+
+        order: {
+          username: 'ASC',
+        },
+
+      });
+
+    return entities.map(
+      entity => this.toDomain(
+        entity,
+      ),
+    );
+
+  }
+
+  /**
+   * Finds a user by their company ID and user ID.
+   * @param companyId
+   * @param id
+   */
+  async findByCompanyAndId(
+    companyId: string,
+    id: string,
+  ): Promise<User | null> {
+
+    const entity =
+      await this.repository.findOne({
+        where: {
+          id,
+          companyId,
+        },
+      });
+
+    return entity
+      ? this.toDomain(entity)
+      : null;
 
   }
 

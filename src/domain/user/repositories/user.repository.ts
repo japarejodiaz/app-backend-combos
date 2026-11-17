@@ -18,4 +18,16 @@ export abstract class UserRepository {
     email: string,
   ): Promise<User | null>;
 
+  abstract findAll():
+    Promise<User[]>;
+
+  abstract findByCompanyId(
+    companyId: string,
+  ): Promise<User[]>;
+
+  abstract findByCompanyAndId(
+    companyId: string,
+    id: string,
+  ): Promise<User | null>;
+
 }

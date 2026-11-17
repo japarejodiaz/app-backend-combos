@@ -1,6 +1,6 @@
 # App Backend Combos
 
-Backend para la gestión de ventas de combos, entregas parciales y control mediante QR.
+Backend para la gestión de ventas de combos, entregas parciales, control mediante QR y operación multiempresa.
 
 ## Tecnologías
 
@@ -8,17 +8,11 @@ Backend para la gestión de ventas de combos, entregas parciales y control media
 - TypeScript
 - PostgreSQL
 - TypeORM
-- Swagger
 - JWT
 - Passport
 - bcrypt
 - Joi
-
-## Requisitos
-
-- Node.js 22+
-- PostgreSQL 15+
-- npm 10+
+- Swagger
 
 ## Instalación
 
@@ -35,9 +29,9 @@ cd app-backend-combos
 npm install
 ```
 
-## Configuración
+### Configurar variables de entorno
 
-Crear el archivo:
+Crear:
 
 ```text
 .env.development
@@ -62,109 +56,95 @@ JWT_SECRET=MiClaveSuperSecretaJWT
 JWT_EXPIRES_IN=8h
 ```
 
-## Crear base de datos
-
-```sql
-CREATE DATABASE combos_db;
-```
-
-## Ejecutar migraciones
+### Ejecutar migraciones
 
 ```bash
 npm run typeorm -- migration:run -d src/infrastructure/database/data-source.ts
 ```
 
-## Ejecutar la aplicación
+### Ejecutar proyecto
 
 ```bash
 npm run start:dev
 ```
 
-## Swagger
+---
 
-Disponible en:
+## Swagger
 
 ```text
 http://localhost:3000/swagger
 ```
 
-## Health Check
+---
 
-Disponible en:
+## Funcionalidades Implementadas
 
-```text
-http://localhost:3000/api/v1/health
-```
-
-## Login
-
-Endpoint:
+### Combo Sales
 
 ```http
-POST /api/v1/auth/login
+POST   /api/v1/combo-sales
+GET    /api/v1/combo-sales/{id}
+
+POST   /api/v1/combo-sales/{id}/deliver
+
+GET    /api/v1/combo-sales/{id}/deliveries
+
+POST   /api/v1/combo-sales/{id}/generate-qr
+
+GET    /api/v1/combo-sales/{id}/qr
 ```
 
-Body:
-
-```json
-{
-  "username": "admin",
-  "password": "Admin123*"
-}
-```
-
-Respuesta:
-
-```json
-{
-  "*ccessToken": "JWT"
-}
-``*
-
-## Funcionalidades implementadas*
-### Ventas
+### Companies
 
 ```http
-POST /api/v1/*ombo-sales
-GET */api/v1/combo-sales/{id}
-*``
+POST   /api/v1/companies
 
-### Entregas
+GET    /api/v1/companies
+
+GET    /api/v1/companies/{id}
+
+PATCH  /api/v1/companies/{id}/activate
+
+PATCH  /api/v1/companies/{id}/deactivate
+```
+
+### Users
 
 ```http
-POST /ap*/v1*combo-sales/{id}/deliver
-GET  /api*v1/combo-sales/{id}/deliveries
-```*
-### QR
-
-```http*POST /api/v1/combo-sales/{id}/gene*ate-qr
-GET  /api/v1/combo-sales/{i*}/qr
+POST   /api/v1/users
 ```
+
+---
 
 ## Seguridad
 
-- JWT Auth*ntication
+- JWT Authentication
+- RolesGuard
 - bcrypt
 - Multiempresa
-* companyId obtenido automáticament* desde el JWT
+- companyId obtenido desde JWT
 
-## Estado actual
+---
 
-C*mpletado:
+## Estado Actual
 
-- Arquitectura Hexagona*
+Completado:
+
+- Arquitectura Hexagonal
 - Multiempresa
-- JWT Authenticati*n
+- Seguridad JWT
+- Gestión de Empresas
 - Gestión de Ventas
-- Gestión de*Entregas
+- Gestión de Entregas
 - Generación de QR
-- Audi*oría de entregas
-- Swagger*- PostgreSQL
-- Migraciones
+- Gestión de Usuarios (Creación)
+- Swagger
+- PostgreSQL
 
-Próxim* Sprint:
+En desarrollo:
 
-- Roles
-- RolesGuard
-- A*torización por perfil
-- Tokens QR *úblicos
+- Consulta de usuarios
+- Activación y desactivación de usuarios
+- Angular Admin
+- Angular Cliente
