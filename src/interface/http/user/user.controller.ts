@@ -5,7 +5,8 @@ import {
   UseGuards,
   Version,
   Get,
-  Param
+  Param,
+  Patch,
 } from '@nestjs/common';
 
 import {
@@ -30,6 +31,17 @@ import { GetUsersUseCase }
   from '../../../application/user/use-cases/get-users.use-case';
 import { GetUserByIdUseCase }
   from '../../../application/user/use-cases/get-user-by-id.use-case';
+
+import { ActivateUserUseCase }
+  from '../../../application/user/use-cases/activate-user.use-case';
+import { DeactivateUserUseCase }
+  from '../../../application/user/use-cases/deactivate-user.use-case';
+
+import { UpdateUserUseCase }
+  from '../../../application/user/use-cases/update-user.use-case';
+
+import { UpdateUserDto }
+  from '../../../application/user/dto/update-user.dto';
 
 import { UserResponseDto } from './dto/user-response.dto';
 
@@ -56,6 +68,12 @@ export class UserController {
     GetUsersUseCase,
     private readonly getUserByIdUseCase:
     GetUserByIdUseCase,
+    private readonly activateUserUseCase:
+    ActivateUserUseCase,
+    private readonly deactivateUserUseCase:
+    DeactivateUserUseCase,
+    private readonly updateUserUseCase:
+    UpdateUserUseCase,
   ) {}
 
   @Post()
@@ -211,6 +229,151 @@ export class UserController {
     return this.getUserByIdUseCase.execute(
       user,
       id,
+    );
+
+  }
+
+
+  @Patch(':id/deactivate')
+  @Version('1')
+
+  @UseGuards(
+    JwtAuthGuard,
+    RolesGuard,
+  )
+
+  @Roles(
+    UserRole.SUPER_ADMIN,
+    UserRole.OWNER,
+  )
+
+  @ApiBearerAuth()
+
+  @ApiOperation({
+    summary: 'Desactivar usuario',
+  })
+
+  deactivate(
+
+    @CurrentUser()
+    user: any,
+
+    @Param('id')
+    id: string,
+
+  ) {
+
+    return this.deactivateUserUseCase.execute(
+      user,
+      id,
+    );
+
+  }
+
+
+
+
+  @Patch(':id/activate')
+  @Version('1')
+
+  @UseGuards(
+    JwtAuthGuard,
+    RolesGuard,
+  )
+
+  @Roles(
+    UserRole.SUPER_ADMIN,
+    UserRole.OWNER,
+  )
+
+  @ApiBearerAuth()
+
+  @ApiOperation({
+    summary: 'Activar usuario',
+  })
+
+  activate(
+
+    @CurrentUser()
+    user: any,
+
+    @Param('id')
+    id: string,
+
+  ) {
+
+    return this.activateUserUseCase.execute(
+      user,
+      id,
+    );
+
+  }
+
+  @Patch(':id')
+  @Version('1')
+
+  @UseGuards(
+    JwtAuthGuard,
+    RolesGuard,
+  )
+
+  @Roles(
+    UserRole.SUPER_ADMIN,
+    UserRole.OWNER,
+  )
+
+  @ApiBearerAuth()
+
+  @ApiOperation({
+    summary: 'Actualizar usuario',
+  })
+
+  @ApiOkResponse({
+    description: 'Usuario actualizado',
+    type: UserResponseDto,
+  })
+
+  @ApiBadRequestResponse({
+    type: ErrorResponseDto,
+  })
+
+  @ApiConflictResponse({
+    description:
+      'Username o email ya existen',
+    type: ErrorResponseDto,
+  })
+
+  @ApiForbiddenResponse({
+    description:
+      'Rol no permitido',
+    type: ErrorResponseDto,
+  })
+
+  @ApiUnauthorizedResponse({
+    type: ErrorResponseDto,
+  })
+
+  @ApiNotFoundResponse({
+    type: ErrorResponseDto,
+  })
+
+  update(
+
+    @CurrentUser()
+    currentUser: any,
+
+    @Param('id')
+    id: string,
+
+    @Body()
+    dto: UpdateUserDto,
+
+  ) {
+
+    return this.updateUserUseCase.execute(
+      currentUser,
+      id,
+      dto,
     );
 
   }

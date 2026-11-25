@@ -49,4 +49,11 @@ export class ComboSaleOrmEntity {
         type: 'uuid',
     })
     companyId: string;
+
+    @Column({
+        name: 'order_id',
+        type: 'uuid',
+        nullable: true,
+    })
+    orderId: string | null;
 }

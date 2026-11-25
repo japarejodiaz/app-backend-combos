@@ -30,4 +30,9 @@ export abstract class UserRepository {
     id: string,
   ): Promise<User | null>;
 
+  abstract update(
+    user: User,
+  ): Promise<User>;
+
+
 }

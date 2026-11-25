@@ -532,3 +532,515 @@ company_id
 ```
 
 como estrategia oficial de multiempresa.
+
+
+# Gestión de Usuarios
+
+## RN-039 Creación de Usuarios
+
+Solo usuarios autorizados podrán crear usuarios.
+
+Roles permitidos:
+
+```text
+SUPER_ADMIN
+OWNER
+```
+
+---
+
+## RN-040 Empresa Heredada
+
+La empresa del nuevo usuario nunca será enviada por el cliente.
+
+La empresa se obtiene automáticamente desde:
+
+```text
+JWT
+ ↓
+CurrentUser
+ ↓
+companyId
+```
+
+---
+
+## RN-041 Username Único
+
+El username debe ser único dentro de toda la plataforma.
+
+No pueden existir dos usuarios con el mismo username.
+
+Resultado esperado:
+
+```http
+409 Conflict
+```
+
+---
+
+## RN-042 Email Único
+
+El email debe ser único dentro de toda la plataforma.
+
+Resultado esperado:
+
+```http
+409 Conflict
+```
+
+---
+
+## RN-043 Contraseñas
+
+Las contraseñas no se almacenan en texto plano.
+
+Todas las contraseñas se almacenan utilizando:
+
+```text
+bcrypt
+```
+
+---
+
+## RN-044 Jerarquía de Roles
+
+Un OWNER puede crear:
+
+```text
+MANAGER
+CASHIER
+WAITER
+CLIENT
+```
+
+---
+
+## RN-045 Restricción de OWNER
+
+Un OWNER no puede crear:
+
+```text
+OWNER
+SUPER_ADMIN
+```
+
+Resultado esperado:
+
+```http
+403 Forbidden
+```
+
+---
+
+## RN-046 Autoridad de SUPER_ADMIN
+
+SUPER_ADMIN puede crear cualquier tipo de usuario.
+
+Roles permitidos:
+
+```text
+SUPER_ADMIN
+OWNER
+MANAGER
+CASHIER
+WAITER
+CLIENT
+```
+
+---
+
+# Consulta de Usuarios
+
+## RN-047 Consulta Global
+
+SUPER_ADMIN puede consultar todos los usuarios de la plataforma.
+
+---
+
+## RN-048 Consulta por Empresa
+
+OWNER y MANAGER solo pueden consultar usuarios de su propia empresa.
+
+---
+
+## RN-049 Aislamiento Multiempresa
+
+No se permite consultar usuarios pertenecientes a otra empresa.
+
+Resultado esperado:
+
+```http
+404 Not Found
+```
+
+---
+
+## RN-050 Restricción de Consulta
+
+Los roles:
+
+```text
+CASHIER
+WAITER
+CLIENT
+```
+
+no pueden consultar usuarios.
+
+Resultado esperado:
+
+```http
+403 Forbidden
+```
+
+---
+
+# Actualización de Usuarios
+
+## RN-051 Campos Editables
+
+Los siguientes campos pueden ser modificados:
+
+```text
+username
+email
+role
+```
+
+---
+
+## RN-052 Campos Protegidos
+
+No pueden modificarse mediante UpdateUser:
+
+```text
+id
+companyId
+password
+active
+```
+
+---
+
+## RN-053 Restricción de Roles
+
+Un OWNER no puede promover usuarios a:
+
+```text
+OWNER
+SUPER_ADMIN
+```
+
+Resultado esperado:
+
+```http
+403 Forbidden
+```
+
+---
+
+## RN-054 Actualización Multiempresa
+
+Un usuario solo puede actualizar usuarios pertenecientes a su empresa.
+
+Resultado esperado:
+
+```http
+404 Not Found
+```
+
+---
+
+# Activación y Desactivación
+
+## RN-055 Desactivación Lógica
+
+La desactivación de usuarios es lógica.
+
+Se implementa mediante:
+
+```text
+active = false
+```
+
+---
+
+## RN-056 Conservación del Histórico
+
+Desactivar un usuario no elimina:
+
+```text
+Ventas
+Entregas
+Auditoría
+Historial
+```
+
+---
+
+## RN-057 Usuario Inactivo
+
+Un usuario inactivo no puede iniciar sesión.
+
+Resultado esperado:
+
+```http
+401 Unauthorized
+```
+
+---
+
+## RN-058 Reactivación
+
+La reactivación se realiza mediante:
+
+```text
+active = true
+```
+
+---
+
+## RN-059 Auto Desactivación
+
+Un usuario no puede desactivar su propia cuenta.
+
+Resultado esperado:
+
+```http
+403 Forbidden
+```
+
+---
+
+## RN-060 Restricción sobre SUPER_ADMIN
+
+Un OWNER no puede activar ni desactivar usuarios con rol:
+
+```text
+SUPER_ADMIN
+```
+
+Resultado esperado:
+
+```http
+403 Forbidden
+```
+
+---
+
+# Gestión de Mesas
+
+## RN-061 Mesa
+
+Una mesa pertenece a una única empresa.
+
+```text
+Company
+  |
+  └── DiningTable
+```
+
+---
+
+## RN-062 Código de Mesa
+
+El código de mesa debe ser único dentro de una empresa.
+
+Ejemplo:
+
+```text
+M01
+M02
+M03
+```
+
+Restricción:
+
+```text
+UNIQUE(company_id, code)
+```
+
+---
+
+## RN-063 Capacidad
+
+Toda mesa debe definir una capacidad máxima.
+
+Ejemplo:
+
+```text
+2
+4
+6
+8
+10
+```
+
+personas.
+
+---
+
+# Gestión de Comandas
+
+## RN-064 Comanda
+
+Una comanda pertenece a una única empresa.
+
+---
+
+## RN-065 Mesa Opcional
+
+Una comanda puede estar asociada a una mesa.
+
+```text
+table_id
+```
+
+puede ser:
+
+```text
+NULL
+```
+
+---
+
+## RN-066 Venta Directa
+
+Cuando:
+
+```text
+order_id = NULL
+```
+
+la venta corresponde a una venta directa.
+
+Ejemplos:
+
+```text
+Bodegón
+Licorería
+Delivery
+```
+
+---
+
+## RN-067 Venta por Comanda
+
+Cuando:
+
+```text
+order_id != NULL
+```
+
+la venta pertenece a una comanda.
+
+---
+
+## RN-068 Apertura de Comanda
+
+Toda comanda debe registrar:
+
+```text
+openedBy
+openedAt
+```
+
+---
+
+## RN-069 Estado de Comanda
+
+Estados permitidos:
+
+```text
+OPEN
+CLOSED
+CANCELLED
+```
+
+---
+
+## RN-070 Comanda Cerrada
+
+Una comanda cerrada no puede recibir nuevas ventas.
+
+---
+
+## RN-071 Comanda Cancelada
+
+Una comanda cancelada no puede ser modificada.
+
+---
+
+## RN-072 Numeración de Comandas
+
+Toda empresa debe tener numeración única de comandas.
+
+Restricción:
+
+```text
+UNIQUE(company_id, order_number)
+```
+
+---
+
+# Compatibilidad Operativa
+
+## RN-073 Modalidad Híbrida
+
+La plataforma soporta simultáneamente:
+
+### Venta Directa
+
+```text
+ComboSale
+  |
+  └── order_id = NULL
+```
+
+---
+
+### Mesa + Comanda
+
+```text
+DiningTable
+     ↓
+CustomerOrder
+     ↓
+ComboSale
+```
+
+---
+
+## RN-074 Compatibilidad Retroactiva
+
+La incorporación de Mesas y Comandas no debe afectar:
+
+```text
+QR
+Entregas
+Historial
+Auditoría
+Multiempresa
+Seguridad
+JWT
+Roles
+```
+
+---
+
+## RN-075 Núcleo del Negocio
+
+La entidad principal del dominio continúa siendo:
+
+```text
+ComboSale
+```
+
+Todas las entregas, auditorías y QR permanecen asociados a ComboSale independientemente de que provengan de:
+
+```text
+Venta Directa
+o
+Comanda
+```

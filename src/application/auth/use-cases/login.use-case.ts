@@ -61,6 +61,14 @@ export class LoginUseCase {
 
     }
 
+    if (!user.active) {
+
+      throw new UnauthorizedException(
+        'User is inactive',
+      );
+
+    }
+
     const payload = {
 
       sub: user.id,

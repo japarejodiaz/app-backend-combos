@@ -15,7 +15,12 @@ import { GetUsersUseCase }
   from '../../../application/user/use-cases/get-users.use-case';
 import { GetUserByIdUseCase }
   from '../../../application/user/use-cases/get-user-by-id.use-case';
-
+import { ActivateUserUseCase }
+  from '../../../application/user/use-cases/activate-user.use-case';
+import { DeactivateUserUseCase }
+  from '../../../application/user/use-cases/deactivate-user.use-case';
+import { UpdateUserUseCase }
+  from '../../../application/user/use-cases/update-user.use-case';
 import { PasswordService } from '../../../infrastructure/security/services/password.service';
 
 @Module({
@@ -35,6 +40,9 @@ import { PasswordService } from '../../../infrastructure/security/services/passw
     CreateUserUseCase,
     GetUsersUseCase,
     GetUserByIdUseCase,
+    ActivateUserUseCase,
+    DeactivateUserUseCase,
+    UpdateUserUseCase,
 
     {
       provide: UserRepository,

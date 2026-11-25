@@ -5,6 +5,7 @@ export class ComboSale {
     constructor(
         public readonly id: string,
         public readonly companyId: string,
+
         public readonly comboId: string,
 
         public totalUnits: number,
@@ -12,6 +13,7 @@ export class ComboSale {
         public deliveredUnits: number,
 
         public status: ComboSaleStatus,
+        public readonly orderId: string | null = null,
     ) {}
 
     get pendingUnits(): number {

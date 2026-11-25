@@ -6,7 +6,8 @@ import { HealthModule } from './interface/http/health/health.module';
 import { ComboSaleModule } from './interface/http/combo-sale/combo-sale.module';
 import { AuthModule } from './interface/http/auth/auth.module';
 import { CompanyModule } from './interface/http/company/company.module';
-import { UserModule }   from './interface/http/user/user.module';
+import { UserModule }   from './interface/http/user/user.module'
+import { TableModule } from './interface/http/table/table.module';
 
 import appConfig from './infrastructure/config/app.config';
 import databaseConfig from './infrastructure/config/database.config';
@@ -34,6 +35,7 @@ import { typeOrmAsyncConfig } from './infrastructure/database/typeorm.config';
     AuthModule,
     CompanyModule,
     UserModule,
+    TableModule,
   ],
   controllers: [HealthController],
 })

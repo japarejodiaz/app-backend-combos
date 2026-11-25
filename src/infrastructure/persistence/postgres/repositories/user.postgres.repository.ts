@@ -200,4 +200,28 @@ export class PostgresUserRepository
 
   }
 
+  /**
+   *
+   * @param user
+   */
+
+  async update(
+    user: User,
+  ): Promise<User> {
+
+    await this.repository.update(
+      user.id,
+      {
+        username: user.username,
+        email: user.email,
+        password: user.password,
+        role: user.role,
+        active: user.active,
+      },
+    );
+
+    return user;
+
+  }
+
 }

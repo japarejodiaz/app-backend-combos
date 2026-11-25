@@ -7,15 +7,15 @@ export class User {
 
     public readonly companyId: string,
 
-    public readonly username: string,
+    public username: string,
 
-    public readonly email: string,
+    public email: string,
 
     public readonly password: string,
 
-    public readonly role: UserRole,
+    public role: UserRole,
 
-    public readonly active: boolean,
+    public active: boolean,
   ) {}
 
 }
