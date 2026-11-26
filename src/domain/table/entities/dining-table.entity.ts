@@ -5,11 +5,11 @@ export class DiningTable {
 
     public readonly companyId: string,
 
-    public readonly code: string,
+    public code: string,
 
-    public readonly name: string,
+    public name: string,
 
-    public readonly capacity: number,
+    public capacity: number,
 
     public active: boolean,
   ) {}

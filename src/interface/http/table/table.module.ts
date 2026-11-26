@@ -14,6 +14,8 @@ import { GetTableByIdUseCase }
   from '../../../application/table/use-cases/get-table-by-id.use-case';
 import { GetTableByCodeUseCase }
   from '../../../application/table/use-cases/get-table-by-code.use-case';
+import { UpdateTableUseCase }
+  from '../../../application/table/use-cases/update-table.use-case';
 
 import { DiningTableRepository }
   from '../../../domain/table/repositories/dining-table.repository';
@@ -41,6 +43,7 @@ import { PostgresDiningTableRepository }
     GetTablesUseCase,
     GetTableByIdUseCase,
     GetTableByCodeUseCase,
+    UpdateTableUseCase,
     {
       provide:
       DiningTableRepository,

@@ -3,6 +3,7 @@ import {
   Controller,
   Post,
   Get,
+  Patch,
   Param,
   UseGuards,
   Version,
@@ -30,9 +31,13 @@ import { GetTableByIdUseCase }
   from '../../../application/table/use-cases/get-table-by-id.use-case';
 import { GetTableByCodeUseCase }
   from '../../../application/table/use-cases/get-table-by-code.use-case';
+import { UpdateTableUseCase }
+  from '../../../application/table/use-cases/update-table.use-case';
 
 import { CreateTableDto }
   from '../../../application/table/dto/create-table.dto';
+import { UpdateTableDto }
+  from '../../../application/table/dto/update-table.dto';
 
 import { TableResponseDto }
   from './dto/table-response.dto';
@@ -68,6 +73,8 @@ export class TableController {
     GetTableByIdUseCase,
     private readonly getTableByCodeUseCase:
     GetTableByCodeUseCase,
+    private readonly updateTableUseCase:
+    UpdateTableUseCase,
   ) {}
 
   @Post()
@@ -265,6 +272,74 @@ export class TableController {
     return this.getTableByIdUseCase.execute(
       currentUser,
       id,
+    );
+
+  }
+
+  @Patch(':id')
+  @Version('1')
+
+  @UseGuards(
+    JwtAuthGuard,
+    RolesGuard,
+  )
+
+  @Roles(
+    UserRole.SUPER_ADMIN,
+    UserRole.OWNER,
+    UserRole.MANAGER,
+  )
+
+  @ApiBearerAuth()
+
+  @ApiOperation({
+    summary: 'Actualizar mesa',
+  })
+
+  @ApiOkResponse({
+    description: 'Mesa actualizada',
+    type: TableResponseDto,
+  })
+
+  @ApiBadRequestResponse({
+    type: ErrorResponseDto,
+  })
+
+  @ApiConflictResponse({
+    description:
+      'Código de mesa duplicado',
+    type: ErrorResponseDto,
+  })
+
+  @ApiForbiddenResponse({
+    type: ErrorResponseDto,
+  })
+
+  @ApiUnauthorizedResponse({
+    type: ErrorResponseDto,
+  })
+
+  @ApiNotFoundResponse({
+    type: ErrorResponseDto,
+  })
+
+  update(
+
+    @CurrentUser()
+    currentUser: any,
+
+    @Param('id')
+    id: string,
+
+    @Body()
+    dto: UpdateTableDto,
+
+  ) {
+
+    return this.updateTableUseCase.execute(
+      currentUser,
+      id,
+      dto,
     );
 
   }
