@@ -25,6 +25,7 @@ export class CreateComboSaleUseCase {
     async execute(
       companyId: string,
         dto: CreateComboSaleDto,
+        orderId?: string | null,
     ) {
 
         const comboSale = new ComboSale(
@@ -34,6 +35,7 @@ export class CreateComboSaleUseCase {
             dto.totalUnits,
             0,
             ComboSaleStatus.OPEN,
+            orderId || null,
         );
 
         return this.repository.create(

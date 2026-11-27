@@ -33,6 +33,7 @@ export class PostgresComboSaleRepository
         totalUnits: sale.totalUnits,
         deliveredUnits: sale.deliveredUnits,
         status: sale.status,
+        orderId: sale.orderId,
       });
 
     await this.repository.save(entity);
@@ -54,12 +55,21 @@ export class PostgresComboSaleRepository
     }
 
     return new ComboSale(
+
       entity.id,
+
       entity.companyId,
+
       entity.comboId,
+
       entity.totalUnits,
+
       entity.deliveredUnits,
+
       entity.status as any,
+
+      entity.orderId,
+
     );
   }
 
@@ -96,12 +106,60 @@ export class PostgresComboSaleRepository
     }
 
     return new ComboSale(
+
       entity.id,
+
       entity.companyId,
+
       entity.comboId,
+
       entity.totalUnits,
+
       entity.deliveredUnits,
+
       entity.status as any,
+
+      entity.orderId,
+
+    );
+
+  }
+
+  async findByOrderId(
+    orderId: string,
+  ): Promise<ComboSale[]> {
+
+    const entities =
+      await this.repository.find({
+
+        where: {
+          orderId,
+        },
+
+      });
+
+    return entities.map(
+
+      entity =>
+
+        new ComboSale(
+
+          entity.id,
+
+          entity.companyId,
+
+          entity.comboId,
+
+          entity.totalUnits,
+
+          entity.deliveredUnits,
+
+          entity.status as any,
+
+          entity.orderId,
+
+        ),
+
     );
 
   }

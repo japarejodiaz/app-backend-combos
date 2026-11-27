@@ -8,6 +8,10 @@ import { AuthModule } from './interface/http/auth/auth.module';
 import { CompanyModule } from './interface/http/company/company.module';
 import { UserModule }   from './interface/http/user/user.module'
 import { TableModule } from './interface/http/table/table.module';
+import { OrderModule }
+  from './interface/http/order/order.module';
+import { ComboModule }
+  from './interface/http/combo/combo.module';
 
 import appConfig from './infrastructure/config/app.config';
 import databaseConfig from './infrastructure/config/database.config';
@@ -36,6 +40,8 @@ import { typeOrmAsyncConfig } from './infrastructure/database/typeorm.config';
     CompanyModule,
     UserModule,
     TableModule,
+    OrderModule,
+    ComboModule,
   ],
   controllers: [HealthController],
 })

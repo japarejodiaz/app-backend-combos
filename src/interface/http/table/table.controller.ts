@@ -33,6 +33,10 @@ import { GetTableByCodeUseCase }
   from '../../../application/table/use-cases/get-table-by-code.use-case';
 import { UpdateTableUseCase }
   from '../../../application/table/use-cases/update-table.use-case';
+import { ActivateTableUseCase }
+  from '../../../application/table/use-cases/activate-table.use-case';
+import { DeactivateTableUseCase }
+  from '../../../application/table/use-cases/deactivate-table.use-case';
 
 import { CreateTableDto }
   from '../../../application/table/dto/create-table.dto';
@@ -60,24 +64,301 @@ import { CurrentUser }
 import { UserRole }
   from '../../../domain/user/enums/user-role.enum';
 
-@ApiTags('Tables')
-@Controller('tables')
-export class TableController {
+  @ApiTags('Tables')
+  @Controller('tables')
+  export class TableController {
 
-  constructor(
-    private readonly createTableUseCase:
-    CreateTableUseCase,
-    private readonly getTablesUseCase:
-    GetTablesUseCase,
-    private readonly getTableByIdUseCase:
-    GetTableByIdUseCase,
-    private readonly getTableByCodeUseCase:
-    GetTableByCodeUseCase,
-    private readonly updateTableUseCase:
-    UpdateTableUseCase,
-  ) {}
+    constructor(
+      private readonly createTableUseCase:
+      CreateTableUseCase,
+      private readonly getTablesUseCase:
+      GetTablesUseCase,
+      private readonly getTableByIdUseCase:
+      GetTableByIdUseCase,
+      private readonly getTableByCodeUseCase:
+      GetTableByCodeUseCase,
+      private readonly updateTableUseCase:
+      UpdateTableUseCase,
+      private readonly activateTableUseCase:
+      ActivateTableUseCase,
+      private readonly deactivateTableUseCase:
+      DeactivateTableUseCase,
+    ) {}
 
-  @Post()
+    @Post()
+    @Version('1')
+
+    @UseGuards(
+      JwtAuthGuard,
+      RolesGuard,
+    )
+
+    @Roles(
+      UserRole.SUPER_ADMIN,
+      UserRole.OWNER,
+      UserRole.MANAGER,
+    )
+
+    @ApiBearerAuth()
+
+    @ApiOperation({
+      summary: 'Crear mesa',
+    })
+
+    @ApiCreatedResponse({
+      description: 'Mesa creada',
+      type: TableResponseDto,
+    })
+
+    @ApiBadRequestResponse({
+      type: ErrorResponseDto,
+    })
+
+    @ApiConflictResponse({
+      description:
+        'Código de mesa duplicado',
+      type: ErrorResponseDto,
+    })
+
+    @ApiForbiddenResponse({
+      type: ErrorResponseDto,
+    })
+
+    @ApiUnauthorizedResponse({
+      type: ErrorResponseDto,
+    })
+
+    @ApiInternalServerErrorResponse({
+      type: ErrorResponseDto,
+    })
+
+    create(
+
+      @CurrentUser()
+      currentUser: any,
+
+      @Body()
+      dto: CreateTableDto,
+
+    ) {
+
+      return this.createTableUseCase.execute(
+        currentUser,
+        dto,
+      );
+
+    }
+
+    @Get()
+    @Version('1')
+
+    @UseGuards(
+      JwtAuthGuard,
+      RolesGuard,
+    )
+
+    @Roles(
+      UserRole.SUPER_ADMIN,
+      UserRole.OWNER,
+      UserRole.MANAGER,
+      UserRole.CASHIER,
+      UserRole.WAITER,
+    )
+
+    @ApiBearerAuth()
+
+    @ApiOperation({
+      summary: 'Listar mesas',
+    })
+
+    @ApiOkResponse({
+      type: TableResponseDto,
+      isArray: true,
+    })
+
+    findAll(
+
+      @CurrentUser()
+      currentUser: any,
+
+    ) {
+
+      return this.getTablesUseCase.execute(
+        currentUser,
+      );
+
+    }
+
+    @Get('code/:code')
+    @Version('1')
+
+    @UseGuards(
+      JwtAuthGuard,
+      RolesGuard,
+    )
+
+    @Roles(
+      UserRole.SUPER_ADMIN,
+      UserRole.OWNER,
+      UserRole.MANAGER,
+      UserRole.CASHIER,
+      UserRole.WAITER,
+    )
+
+    @ApiBearerAuth()
+
+    @ApiOperation({
+      summary: 'Consultar mesa por código',
+    })
+
+    @ApiOkResponse({
+      type: TableResponseDto,
+    })
+
+    @ApiNotFoundResponse({
+      type: ErrorResponseDto,
+    })
+
+    findByCode(
+
+      @CurrentUser()
+      currentUser: any,
+
+      @Param('code')
+      code: string,
+
+    ) {
+
+      return this.getTableByCodeUseCase.execute(
+        currentUser,
+        code,
+      );
+
+    }
+
+
+    @Get(':id')
+    @Version('1')
+
+    @UseGuards(
+      JwtAuthGuard,
+      RolesGuard,
+    )
+
+    @Roles(
+      UserRole.SUPER_ADMIN,
+      UserRole.OWNER,
+      UserRole.MANAGER,
+      UserRole.CASHIER,
+      UserRole.WAITER,
+    )
+
+    @ApiBearerAuth()
+
+    @ApiOperation({
+      summary: 'Consultar mesa',
+    })
+
+    @ApiOkResponse({
+      type: TableResponseDto,
+    })
+
+    @ApiNotFoundResponse({
+      type: ErrorResponseDto,
+    })
+
+    findOne(
+
+      @CurrentUser()
+      currentUser: any,
+
+      @Param('id')
+      id: string,
+
+    ) {
+
+      return this.getTableByIdUseCase.execute(
+        currentUser,
+        id,
+      );
+
+    }
+
+    @Patch(':id')
+    @Version('1')
+
+    @UseGuards(
+      JwtAuthGuard,
+      RolesGuard,
+    )
+
+    @Roles(
+      UserRole.SUPER_ADMIN,
+      UserRole.OWNER,
+      UserRole.MANAGER,
+    )
+
+    @ApiBearerAuth()
+
+    @ApiOperation({
+      summary: 'Actualizar mesa',
+    })
+
+    @ApiOkResponse({
+      description: 'Mesa actualizada',
+      type: TableResponseDto,
+    })
+
+    @ApiBadRequestResponse({
+      type: ErrorResponseDto,
+    })
+
+    @ApiConflictResponse({
+      description:
+        'Código de mesa duplicado',
+      type: ErrorResponseDto,
+    })
+
+    @ApiForbiddenResponse({
+      type: ErrorResponseDto,
+    })
+
+    @ApiUnauthorizedResponse({
+      type: ErrorResponseDto,
+    })
+
+    @ApiNotFoundResponse({
+      type: ErrorResponseDto,
+    })
+
+    update(
+
+      @CurrentUser()
+      currentUser: any,
+
+      @Param('id')
+      id: string,
+
+      @Body()
+      dto: UpdateTableDto,
+
+    ) {
+
+      return this.updateTableUseCase.execute(
+        currentUser,
+        id,
+        dto,
+      );
+
+    }
+
+    /**
+     * Desactiva una mesa por su ID.
+     * @param currentUser
+     * @param id
+     */
+
+  @Patch(':id/deactivate')
   @Version('1')
 
   @UseGuards(
@@ -94,116 +375,11 @@ export class TableController {
   @ApiBearerAuth()
 
   @ApiOperation({
-    summary: 'Crear mesa',
-  })
-
-  @ApiCreatedResponse({
-    description: 'Mesa creada',
-    type: TableResponseDto,
-  })
-
-  @ApiBadRequestResponse({
-    type: ErrorResponseDto,
-  })
-
-  @ApiConflictResponse({
-    description:
-      'Código de mesa duplicado',
-    type: ErrorResponseDto,
-  })
-
-  @ApiForbiddenResponse({
-    type: ErrorResponseDto,
-  })
-
-  @ApiUnauthorizedResponse({
-    type: ErrorResponseDto,
-  })
-
-  @ApiInternalServerErrorResponse({
-    type: ErrorResponseDto,
-  })
-
-  create(
-
-    @CurrentUser()
-    currentUser: any,
-
-    @Body()
-    dto: CreateTableDto,
-
-  ) {
-
-    return this.createTableUseCase.execute(
-      currentUser,
-      dto,
-    );
-
-  }
-
-  @Get()
-  @Version('1')
-
-  @UseGuards(
-    JwtAuthGuard,
-    RolesGuard,
-  )
-
-  @Roles(
-    UserRole.SUPER_ADMIN,
-    UserRole.OWNER,
-    UserRole.MANAGER,
-    UserRole.CASHIER,
-    UserRole.WAITER,
-  )
-
-  @ApiBearerAuth()
-
-  @ApiOperation({
-    summary: 'Listar mesas',
+    summary: 'Desactivar mesa',
   })
 
   @ApiOkResponse({
-    type: TableResponseDto,
-    isArray: true,
-  })
-
-  findAll(
-
-    @CurrentUser()
-    currentUser: any,
-
-  ) {
-
-    return this.getTablesUseCase.execute(
-      currentUser,
-    );
-
-  }
-
-  @Get('code/:code')
-  @Version('1')
-
-  @UseGuards(
-    JwtAuthGuard,
-    RolesGuard,
-  )
-
-  @Roles(
-    UserRole.SUPER_ADMIN,
-    UserRole.OWNER,
-    UserRole.MANAGER,
-    UserRole.CASHIER,
-    UserRole.WAITER,
-  )
-
-  @ApiBearerAuth()
-
-  @ApiOperation({
-    summary: 'Consultar mesa por código',
-  })
-
-  @ApiOkResponse({
+    description: 'Mesa desactivada',
     type: TableResponseDto,
   })
 
@@ -211,55 +387,7 @@ export class TableController {
     type: ErrorResponseDto,
   })
 
-  findByCode(
-
-    @CurrentUser()
-    currentUser: any,
-
-    @Param('code')
-    code: string,
-
-  ) {
-
-    return this.getTableByCodeUseCase.execute(
-      currentUser,
-      code,
-    );
-
-  }
-
-
-  @Get(':id')
-  @Version('1')
-
-  @UseGuards(
-    JwtAuthGuard,
-    RolesGuard,
-  )
-
-  @Roles(
-    UserRole.SUPER_ADMIN,
-    UserRole.OWNER,
-    UserRole.MANAGER,
-    UserRole.CASHIER,
-    UserRole.WAITER,
-  )
-
-  @ApiBearerAuth()
-
-  @ApiOperation({
-    summary: 'Consultar mesa',
-  })
-
-  @ApiOkResponse({
-    type: TableResponseDto,
-  })
-
-  @ApiNotFoundResponse({
-    type: ErrorResponseDto,
-  })
-
-  findOne(
+  deactivate(
 
     @CurrentUser()
     currentUser: any,
@@ -269,82 +397,58 @@ export class TableController {
 
   ) {
 
-    return this.getTableByIdUseCase.execute(
-      currentUser,
-      id,
-    );
+      return this.deactivateTableUseCase.execute(
+        currentUser,
+        id,
+      );
 
-  }
+    }
 
-  @Patch(':id')
-  @Version('1')
+    @Patch(':id/activate')
+    @Version('1')
 
-  @UseGuards(
-    JwtAuthGuard,
-    RolesGuard,
-  )
+    @UseGuards(
+      JwtAuthGuard,
+      RolesGuard,
+    )
 
-  @Roles(
-    UserRole.SUPER_ADMIN,
-    UserRole.OWNER,
-    UserRole.MANAGER,
-  )
+    @Roles(
+      UserRole.SUPER_ADMIN,
+      UserRole.OWNER,
+      UserRole.MANAGER,
+    )
 
-  @ApiBearerAuth()
+    @ApiBearerAuth()
 
-  @ApiOperation({
-    summary: 'Actualizar mesa',
-  })
+    @ApiOperation({
+      summary: 'Activar mesa',
+    })
 
-  @ApiOkResponse({
-    description: 'Mesa actualizada',
-    type: TableResponseDto,
-  })
+    @ApiOkResponse({
+      description: 'Mesa activada',
+      type: TableResponseDto,
+    })
 
-  @ApiBadRequestResponse({
-    type: ErrorResponseDto,
-  })
+    @ApiNotFoundResponse({
+      type: ErrorResponseDto,
+    })
 
-  @ApiConflictResponse({
-    description:
-      'Código de mesa duplicado',
-    type: ErrorResponseDto,
-  })
+    activate(
 
-  @ApiForbiddenResponse({
-    type: ErrorResponseDto,
-  })
+      @CurrentUser()
+      currentUser: any,
 
-  @ApiUnauthorizedResponse({
-    type: ErrorResponseDto,
-  })
+      @Param('id')
+      id: string,
 
-  @ApiNotFoundResponse({
-    type: ErrorResponseDto,
-  })
+    ) {
 
-  update(
+      return this.activateTableUseCase.execute(
+        currentUser,
+        id,
+      );
 
-    @CurrentUser()
-    currentUser: any,
-
-    @Param('id')
-    id: string,
-
-    @Body()
-    dto: UpdateTableDto,
-
-  ) {
-
-    return this.updateTableUseCase.execute(
-      currentUser,
-      id,
-      dto,
-    );
-
-  }
-
-
+    }
 
 
 }

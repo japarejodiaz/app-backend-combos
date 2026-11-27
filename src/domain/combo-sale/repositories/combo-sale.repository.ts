@@ -19,4 +19,8 @@ export abstract class ComboSaleRepository {
       id: string,
     ): Promise<ComboSale | null>;
 
+    abstract findByOrderId(
+      orderId: string,
+    ): Promise<ComboSale[]>;
+
 }

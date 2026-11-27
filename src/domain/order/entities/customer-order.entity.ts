@@ -11,7 +11,7 @@ export class CustomerOrder {
 
     public readonly tableId: string | null,
 
-    public readonly orderNumber: number,
+    public readonly orderNumber: string,
 
     public status: OrderStatus,
 
